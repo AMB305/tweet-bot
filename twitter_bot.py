@@ -29,8 +29,9 @@ class IDPrinter(tweepy.Stream):
     def on_status(self, status):
       if str(status.user._json['id']) in all_users_to_follow:
         if status._json.get("in_reply_to_status_id") is None:
-          reply_text = random.choice([i for i in user_reply_dict.get(status.user._json['screen_name']) if i==i])                
-          client.create_tweet(text = reply_text, in_reply_to_tweet_id=status.id)
+          if not status._json.get("retweeted"):
+            reply_text = random.choice([i for i in user_reply_dict.get(status.user._json['screen_name']) if i==i])                
+            client.create_tweet(text = reply_text, in_reply_to_tweet_id=status.id)
 
 printer = IDPrinter(
   os.environ['CONSUMER_KEY'], os.environ['CONSUMER_SECRET'],
